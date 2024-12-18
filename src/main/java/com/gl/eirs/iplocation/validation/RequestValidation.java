@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import java.util.regex.Pattern;
 
 @Service
 public class RequestValidation {
@@ -21,6 +22,11 @@ public class RequestValidation {
     GlobalExceptionHandler globalExceptionHandler;
     public static final HttpMethod GET = HttpMethod.valueOf("GET");
 
+    private static final String IPV4_PATTERN =
+            "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+
+    private static final Pattern pattern = Pattern.compile(IPV4_PATTERN);
+    
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public void validateRequest(HttpServletRequest request, IpInformation ipInformation) {
         logger.info("Validating the request received for check ip location.");
@@ -59,5 +65,10 @@ public class RequestValidation {
             logger.error("Ip Type value is null or blank");
             throw new UnprocessableEntityException("IP Type value is null");
         }
+        //pattern.matcher(ip).matches()
+        if(pattern.matcher(ipInformation.getIp()).matches()) {
+            logger.error("Ip is not valid");
+            throw new UnprocessableEntityException("IP is not valid");
+        }        
     }
 }
