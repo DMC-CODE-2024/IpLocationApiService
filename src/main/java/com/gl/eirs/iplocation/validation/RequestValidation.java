@@ -42,7 +42,8 @@ public class RequestValidation {
 
         if(ipInformation.getIp() == null) {
             logger.error("Ip is missing the request");
-            throw new MissingRequestParameterException("IP is missing");
+           // throw new MissingRequestParameterException("IP is missing");
+            throw new UnprocessableEntityException("IP is missing");
         }
         if(ipInformation.getIpType() == null) {
             logger.error("Ip type is missing the request");
